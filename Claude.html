@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Maa Bhoomi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --soil: #3d2b1f;
+  --clay: #7a4e2d;
+  --wheat: #d4a853;
+  --wheat-light: #f0c97a;
+  --leaf: #4a7c59;
+  --leaf-light: #6aad7e;
+  --parchment: #f5edd8;
+  --parchment-dark: #e8d8b8;
+  --white: #fefcf7;
+  --text: #2a1f14;
+  --text-muted: #7a6a5a;
+  --danger: #c0392b;
+  --danger-light: rgba(192,57,43,0.1);
+  --shadow: 0 4px 24px rgba(61,43,31,0.13);
+  --shadow-lg: 0 12px 40px rgba(61,43,31,0.2);
+  --radius: 16px;
+  --admin-color: #8b1a1a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--parchment);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 15% 0%, rgba(212,168,83,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(74,124,89,0.15) 0%, transparent 50%);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--parchment); }
+::-webkit-scrollbar-thumb { background: var(--parchment-dark); border-radius: 3px; }
+
+header {
+  background: var(--soil);
+  color: var(--parchment);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--wheat);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.logo h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: var(--wheat);
+}
+.logo p { font-size: 0.65rem; color: rgba(245,237,216,0.55); letter-spacing: 1px; text-transform: uppercase; }
+
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+.admin-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(139,26,26,0.25);
+  border: 1px solid rgba(139,26,26,0.5);
+  border-radius: 50px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  color: #ffaaaa;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.admin-btn:hover { background: rgba(139,26,26,0.4); }
+.admin-btn.active {
+  background: var(--admin-color);
+  border-color: var(--admin-color);
+  color: #ffe0e0;
+}
+.admin-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.container { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+.admin-banner {
+  display: none;
+  background: linear-gradient(135deg, #8b1a1a, #c0392b);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin-bottom: 1.2rem;
+  font-size: 0.83rem;
+  font-weight: 500;
+  align-items: center;
+  gap: 10px;
+  animation: slideDown 0.3s ease;
+}
+.admin-banner.show { display: flex; }
+@keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+.admin-banner span { flex: 1; }
+.logout-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.logout-btn:hover { background: rgba(255,255,255,0.3); }
+
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 600px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  border: 1.5px solid var(--parchment-dark);
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 10px;
+}
+.stat-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.stat-icon.green { background: rgba(74,124,89,0.12); }
+.stat-icon.wheat { background: rgba(212,168,83,0.15); }
+.stat-icon.blue { background: rgba(44,95,122,0.12); }
+.stat-icon.red { background: rgba(139,26,26,0.1); }
+.stat-num { font-size: 1.4rem; font-weight: 700; color: var(--soil); line-height: 1; }
+.stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+.toolbar {
+  display: flex; gap: 0.8rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-box { flex: 1; min-width: 200px; position: relative; }
+.search-box input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1.5px solid var(--parchment-dark);
+  border-radius: 50px;
+  background: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  transition: border 0.2s;
+}
+.search-box input:focus { border-color: var(--wheat); }
+.search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 15px; pointer-events: none; }
+.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill {
+  padding: 7px 14px;
+  border-radius: 50px;
+  border: 1.5px solid var(--parchment-dark);
+  background: var(--white);
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.18s;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--wheat); color: var(--clay); }
+.pill.active { background: var(--soil); color: var(--wheat); border-color: var(--soil); }
+.add-land-btn {
+  padding: 9px 18px;
+  background: var(--leaf);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.add-land-btn:hover { background: #3a6848; transform: translateY(-1px); }
+.add-land-btn:active { transform: translateY(0); }
+
+.section-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--soil); margin-bottom: 0.25rem; }
+.section-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.4rem; }
+
+.land-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 480px) {
+  .land-grid { grid-template-columns: 1fr; }
+}
+
+.land-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--parchment-dark);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+  animation: fadeUp 0.4s ease both;
+  position: relative;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.land-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--wheat); }
+.land-card:active { transform: translateY(-2px); }
+
+.card-banner {
+  height: 85px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.card-banner::after { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.15); }
+.banner-emoji { font-size: 2.6rem; position: relative; z-index: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.card-badge {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  background: rgba(255,255,255,0.92);
+  border-radius: 50px;
+  padding: 2px 9px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--leaf);
+}
+.card-badge.dispute { color: var(--danger); }
+
+.card-edit-btn {
+  display: none;
+  position: absolute; top: 8px; left: 8px; z-index: 3;
+  background: rgba(139,26,26,0.85);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.card-edit-btn:hover { background: var(--admin-color); }
+body.admin-mode .card-edit-btn { display: block; }
+
+.card-body { padding: 1rem 1.2rem 1.2rem; }
+.card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.18rem;
+  color: var(--soil);
+  display: flex; align-items: center; gap: 7px;
+}
+.land-initial {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  flex-shrink: 0;
+}
+.card-location { font-size: 0.77rem; color: var(--text-muted); margin: 4px 0 9px; }
+.card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px; }
+.meta-item { background: var(--parchment); border-radius: 7px; padding: 5px 9px; }
+.meta-label { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); }
+.meta-val { font-size: 0.84rem; font-weight: 600; color: var(--soil); margin-top: 1px; }
+.doc-count-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 9px;
+  border-top: 1px solid var(--parchment-dark);
+}
+.doc-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.doc-chip {
+  font-size: 0.65rem; padding: 2px 8px;
+  border-radius: 50px;
+  background: var(--parchment);
+  color: var(--clay);
+  font-weight: 500;
+  border: 1px solid var(--parchment-dark);
+}
+.view-btn { font-size: 0.78rem; color: var(--leaf); font-weight: 700; white-space: nowrap; }
+
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(42,31,20,0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 500;
+  padding: 1rem;
+  overflow-y: auto;
+}
+.overlay.open {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes slideUp { from { transform:translateY(30px) scale(0.97); opacity:0; } to { transform:translateY(0) scale(1); opacity:1; } }
+
+.detail-panel {
+  background: var(--white);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 760px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  animation: slideUp 0.28s cubic-bezier(0.34,1.4,0.64,1);
+  flex-shrink: 0;
+}
+
+.panel-header {
+  position: sticky; top: 0;
+  padding: 1.3rem 1.6rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-radius: 20px 20px 0 0;
+  z-index: 10;
+}
+.panel-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white; }
+.panel-sub { font-size: 0.75rem; color: rgba(255,255,255,0.65); margin-top: 2px; }
+
+.close-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.close-btn:hover { background: rgba(255,255,255,0.25); }
+
+.panel-body { padding: 1.5rem; }
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-bottom: 1.6rem;
+}
+.info-box {
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--parchment-dark);
+}
+.info-box .label { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); }
+.info-box .value { font-size: 0.9rem; font-weight: 600; color: var(--soil); margin-top: 3px; }
+
+.section-head {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--soil);
+  margin-bottom: 0.9rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-head::after { content:''; flex:1; height:1px; background: var(--parchment-dark); }
+
+.doc-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.6rem; }
+
+.doc-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--parchment-dark);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.doc-item:hover { border-color: var(--wheat); background: #fdf6e3; }
+.doc-icon {
+  width: 38px; height: 38px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.doc-icon.pdf { background: rgba(192,57,43,0.12); }
+.doc-icon.img { background: rgba(52,152,219,0.12); }
+.doc-icon.doc { background: rgba(41,128,185,0.12); }
+.doc-name { font-size: 0.87rem; font-weight: 600; color: var(--soil); }
+.doc-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+.doc-tag { background: var(--parchment-dark); padding: 1px 7px; border-radius: 50px; }
+
+.doc-actions { margin-left: auto; display: flex; gap: 6px; flex-shrink: 0; }
+.doc-btn {
+  padding: 5px 11px;
+  border-radius: 7px;
+  border: 1.5px solid;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.doc-btn.view { border-color: var(--leaf); color: var(--leaf); background: transparent; }
+.doc-btn.view:hover { background: var(--leaf); color: white; }
+.doc-btn.dl { border-color: var(--clay); color: var(--clay); background: transparent; }
+.doc-btn.dl:hover { background: var(--clay); color: white; }
+.doc-btn.del { border-color: var(--danger); color: var(--danger); background: transparent; display: none; }
+.doc-btn.del:hover { background: var(--danger); color: white; }
+body.admin-mode .doc-btn.del { display: inline-flex; align-items: center; }
+
+.upload-trigger {
+  display: none;
+  border: 1.5px dashed var(--parchment-dark);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.83rem;
+  transition: all 0.18s;
+  margin-top: 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.upload-trigger:hover { border-color: var(--wheat); color: var(--clay); background: #fdf6e3; }
+body.admin-mode .upload-trigger { display: flex; }
+
+/* ── OWNER LIST (detail panel) ── */
+.owner-list { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.owner-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--parchment);
+  border: 1.5px solid var(--parchment-dark);
+  border-radius: 50px;
+  padding: 6px 14px;
+}
+.owner-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.owner-name { font-size: 0.8rem; font-weight: 500; color: var(--soil); }
+.owner-role { font-size: 0.68rem; color: var(--text-muted); }
+
+/* Admin edit owners button */
+.edit-owners-btn {
+  display: none;
+  align-items: center; gap: 6px;
+  background: rgba(139,26,26,0.12);
+  border: 1.5px solid rgba(139,26,26,0.3);
+  color: var(--admin-color);
+  border-radius: 8px;
+  padding: 6px 13px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+  margin-bottom: 1.6rem;
+}
+.edit-owners-btn:hover { background: rgba(139,26,26,0.2); border-color: var(--admin-color); }
+body.admin-mode .edit-owners-btn { display: flex; }
+
+.notes-box {
+  background: #fffbf0;
+  border: 1.5px dashed var(--wheat);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.modal-panel {
+  background: var(--white);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  animation: slideUp 0.28s cubic-bezier(0.34,1.4,0.64,1);
+  overflow: hidden;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.modal-header {
+  padding: 1.3rem 1.6rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--wheat); }
+.modal-sub { font-size: 0.73rem; color: rgba(245,237,216,0.6); margin-top: 2px; }
+
+.form-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 0.75rem; font-weight: 600; color: var(--soil); text-transform: uppercase; letter-spacing: 0.7px; }
+.form-input, .form-textarea {
+  padding: 10px 13px;
+  border: 1.5px solid var(--parchment-dark);
+  border-radius: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  background: var(--parchment);
+  outline: none;
+  transition: border 0.18s;
+  width: 100%;
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--wheat); background: var(--white); }
+.form-textarea { resize: vertical; min-height: 70px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 400px) { .form-row { grid-template-columns: 1fr; } }
+
+.submit-btn {
+  padding: 12px;
+  background: var(--soil);
+  color: var(--wheat);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+  width: 100%;
+}
+.submit-btn:hover { background: var(--clay); transform: translateY(-1px); }
+.submit-btn.danger-btn { background: var(--admin-color); color: #ffe0e0; }
+.submit-btn.danger-btn:hover { background: var(--danger); }
+
+.pin-display {
+  display: flex; gap: 10px; justify-content: center; margin: 8px 0;
+}
+.pin-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--parchment-dark);
+  transition: all 0.15s;
+}
+.pin-dot.filled { background: var(--wheat); border-color: var(--wheat); }
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 8px 0;
+}
+.numpad-btn {
+  padding: 14px;
+  border: 1.5px solid var(--parchment-dark);
+  border-radius: 10px;
+  background: var(--parchment);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--soil);
+  transition: all 0.15s;
+  text-align: center;
+}
+.numpad-btn:hover { background: var(--wheat); border-color: var(--wheat); color: white; }
+.numpad-btn:active { transform: scale(0.95); }
+.numpad-btn.clear { color: var(--danger); font-size: 0.85rem; }
+.numpad-btn.enter { background: var(--soil); color: var(--wheat); border-color: var(--soil); grid-column: span 2; }
+.numpad-btn.enter:hover { background: var(--clay); }
+
+.pin-error { color: var(--danger); font-size: 0.8rem; text-align: center; margin-top: 4px; min-height: 18px; }
+
+.file-drop-zone {
+  border: 2px dashed var(--parchment-dark);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+  font-size: 0.83rem;
+}
+.file-drop-zone:hover { border-color: var(--wheat); background: #fdf6e3; }
+.file-drop-zone.dragover { border-color: var(--leaf); background: rgba(74,124,89,0.05); }
+.file-drop-zone input[type="file"] { display: none; }
+.file-drop-icon { font-size: 2rem; margin-bottom: 6px; }
+.file-selected-name {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: var(--parchment);
+  border-radius: 7px;
+  font-size: 0.8rem;
+  color: var(--soil);
+  font-weight: 500;
+  display: none;
+}
+
+/* ── DRIVE LINK SECTION ── */
+.drive-divider {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text-muted); font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  margin: 2px 0;
+}
+.drive-divider::before, .drive-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--parchment-dark);
+}
+.drive-input-wrap { position: relative; }
+.drive-input-wrap input { padding-right: 38px; }
+.drive-status-icon {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  font-size: 1rem; pointer-events: none;
+}
+.drive-preview {
+  display: none;
+  align-items: center; gap: 9px;
+  background: rgba(74,124,89,0.08);
+  border: 1.5px solid rgba(74,124,89,0.3);
+  border-radius: 9px;
+  padding: 9px 12px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--leaf);
+  font-weight: 600;
+}
+.drive-preview.show { display: flex; }
+.drive-preview-icon { font-size: 1.2rem; flex-shrink: 0; }
+.drive-preview-text { flex: 1; min-width: 0; }
+.drive-preview-text small { display: block; font-size: 0.68rem; color: var(--text-muted); font-weight: 400; word-break: break-all; }
+.drive-clear-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--danger); font-size: 0.9rem; padding: 2px 5px;
+  border-radius: 5px; transition: background 0.15s;
+}
+.drive-clear-btn:hover { background: var(--danger-light); }
+.drive-help-tip {
+  font-size: 0.71rem; color: var(--text-muted);
+  background: var(--parchment);
+  border-radius: 7px; padding: 7px 10px;
+  line-height: 1.5;
+  border: 1px solid var(--parchment-dark);
+}
+.drive-help-tip strong { color: var(--clay); }
+
+/* ── OWNER EDITOR (inside edit-owners modal) ── */
+.owner-editor-list { display: flex; flex-direction: column; gap: 8px; }
+.owner-editor-item {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--parchment);
+  border: 1.5px solid var(--parchment-dark);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+.owner-editor-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.owner-editor-info { flex: 1; min-width: 0; }
+.owner-editor-name { font-size: 0.85rem; font-weight: 600; color: var(--soil); }
+.owner-editor-role { font-size: 0.7rem; color: var(--text-muted); }
+.owner-del-btn {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: 1.5px solid rgba(192,57,43,0.3);
+  background: rgba(192,57,43,0.08);
+  color: var(--danger);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.owner-del-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+.add-owner-row {
+  display: flex; gap: 8px; align-items: flex-end;
+  padding: 10px 12px;
+  background: #fffbf0;
+  border: 1.5px dashed var(--wheat);
+  border-radius: 10px;
+}
+.add-owner-row .form-group { flex: 1; margin-bottom: 0; }
+.add-owner-confirm-btn {
+  padding: 9px 14px;
+  background: var(--leaf);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  align-self: flex-end;
+  height: 38px;
+}
+.add-owner-confirm-btn:hover { background: #3a6848; }
+
+.color-picker-row {
+  display: flex; gap: 7px; flex-wrap: wrap; margin-top: 4px;
+}
+.color-swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.15s, transform 0.12s;
+  flex-shrink: 0;
+}
+.color-swatch:hover { transform: scale(1.2); }
+.color-swatch.selected { border-color: var(--soil); transform: scale(1.15); }
+
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--soil);
+  color: var(--parchment);
+  padding: 11px 22px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.4,0.64,1);
+  white-space: nowrap;
+  max-width: calc(100vw - 2rem);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); grid-column: 1/-1; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+
+@media (max-width: 600px) {
+  .container { padding: 1rem 0.75rem; padding-bottom: 5rem; }
+  .filter-pills .pill:nth-child(n+3) { display: none; }
+  header { height: 58px; padding: 0 1rem; }
+  .logo h1 { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div>
+      <h1>Maa Bhoomi</h1>
+      <p>AVR Private Document Vault</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="admin-btn" id="adminToggleBtn" onclick="openAdminLogin()">
+      🔐 Admin
+    </button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- ADMIN BANNER -->
+  <div class="admin-banner" id="adminBanner">
+    <div class="admin-dot"></div>
+    <span>🛡️ Admin Mode Active — You can edit, add & delete records</span>
+    <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-icon green">🌿</div>
+      <div><div class="stat-num" id="totalLands">0</div><div class="stat-label">Land Plots</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon wheat">📄</div>
+      <div><div class="stat-num" id="totalDocs">0</div><div class="stat-label">Documents</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">📐</div>
+      <div><div class="stat-num" id="totalAcres">0</div><div class="stat-label">Total Acres</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">👥</div>
+      <div><div class="stat-num" id="totalMembers">0</div><div class="stat-label">Members</div></div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search by name, location, survey no..." id="searchInput" oninput="filterLands()">
+    </div>
+    <div class="filter-pills">
+      <button class="pill active" onclick="filterByType('all',this)">All</button>
+      <button class="pill" onclick="filterByType('agriculture',this)">🌾 Agriculture</button>
+      <button class="pill" onclick="filterByType('dry',this)">🌵 Dry</button>
+      <button class="pill" onclick="filterByType('wet',this)">💧 Wet</button>
+    </div>
+    <button class="add-land-btn" id="addLandBtn" style="display:none" onclick="openAddLand()">+ Add Land</button>
+  </div>
+
+  <div class="section-title">Your Land Plots</div>
+  <div class="section-sub" id="sectionSub">Tap any land card to view documents and details</div>
+
+  <div class="land-grid" id="landGrid"></div>
+</div>
+
+<!-- ══ DETAIL OVERLAY ══ -->
+<div class="overlay" id="detailOverlay" onclick="closeBg(event,'detailOverlay')">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<!-- ══ ADMIN LOGIN OVERLAY ══ -->
+<div class="overlay" id="loginOverlay" onclick="closeBg(event,'loginOverlay')">
+  <div class="modal-panel">
+    <div class="modal-header" style="background:var(--admin-color)">
+      <div>
+        <div class="modal-title">🔐 Admin Login</div>
+        <div class="modal-sub">Enter 4-digit PIN to access edit mode</div>
+      </div>
+      <button class="close-btn" onclick="closeOverlay('loginOverlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <div class="pin-display" id="pinDisplay">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-error" id="pinError"></div>
+      <div class="numpad">
+        <button class="numpad-btn" onclick="pinKey('1')">1</button>
+        <button class="numpad-btn" onclick="pinKey('2')">2</button>
+        <button class="numpad-btn" onclick="pinKey('3')">3</button>
+        <button class="numpad-btn" onclick="pinKey('4')">4</button>
+        <button class="numpad-btn" onclick="pinKey('5')">5</button>
+        <button class="numpad-btn" onclick="pinKey('6')">6</button>
+        <button class="numpad-btn" onclick="pinKey('7')">7</button>
+        <button class="numpad-btn" onclick="pinKey('8')">8</button>
+        <button class="numpad-btn" onclick="pinKey('9')">9</button>
+        <button class="numpad-btn clear" onclick="pinClear()">✕ Clear</button>
+        <button class="numpad-btn" onclick="pinKey('0')">0</button>
+        <button class="numpad-btn" onclick="pinBack()">⌫</button>
+        <button class="numpad-btn enter" onclick="pinSubmit()">✓ Enter</button>
+      </div>
+      <p style="font-size:0.72rem;color:var(--text-muted);text-align:center">Default PIN: <strong>2768</strong> (change in code)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD LAND OVERLAY ══ -->
+<div class="overlay" id="addOverlay" onclick="closeBg(event,'addOverlay')">
+  <div class="modal-panel">
+    <div class="modal-header" style="background:var(--soil)">
+      <div>
+        <div class="modal-title">🌱 Add New Land</div>
+        <div class="modal-sub">Register a new plot to the family vault</div>
+      </div>
+      <button class="close-btn" onclick="closeOverlay('addOverlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Land Name</label>
+          <input class="form-input" id="f_name" placeholder="e.g. North Field">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Land Type</label>
+          <select class="form-input" id="f_type">
+            <option value="agriculture">Agriculture</option>
+            <option value="dry">Dry Land</option>
+            <option value="wet">Wet Land</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Village / Location</label>
+        <input class="form-input" id="f_location" placeholder="e.g. Karimnagar, Telangana">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Survey Number</label>
+          <input class="form-input" id="f_survey" placeholder="e.g. 123/A">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Area (Acres)</label>
+          <input class="form-input" id="f_area" type="number" step="0.1" placeholder="e.g. 3.5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Primary Owner</label>
+        <input class="form-input" id="f_owner" placeholder="e.g. Father - Raju">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="f_notes" placeholder="Any important notes about this land..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="addLand()">🌱 Register Land</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT LAND OVERLAY ══ -->
+<div class="overlay" id="editOverlay" onclick="closeBg(event,'editOverlay')">
+  <div class="modal-panel">
+    <div class="modal-header" style="background:var(--admin-color)">
+      <div>
+        <div class="modal-title">✏️ Edit Land</div>
+        <div class="modal-sub">Admin: Update land details</div>
+      </div>
+      <button class="close-btn" onclick="closeOverlay('editOverlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <input type="hidden" id="e_id">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Land Name</label>
+          <input class="form-input" id="e_name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Land Type</label>
+          <select class="form-input" id="e_type">
+            <option value="agriculture">Agriculture</option>
+            <option value="dry">Dry Land</option>
+            <option value="wet">Wet Land</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Village / Location</label>
+        <input class="form-input" id="e_location">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Survey Number</label>
+          <input class="form-input" id="e_survey">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Area (Acres)</label>
+          <input class="form-input" id="e_area" type="number" step="0.1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="e_status">
+          <option value="clear">✓ Clear</option>
+          <option value="dispute">⚠ Dispute</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="e_notes"></textarea>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="submit-btn danger-btn" onclick="deleteLand()" style="flex:0.4">🗑 Delete</button>
+        <button class="submit-btn" onclick="saveLand()" style="flex:0.6">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD DOCUMENT OVERLAY ══ -->
+<div class="overlay" id="addDocOverlay" onclick="closeBg(event,'addDocOverlay')">
+  <div class="modal-panel">
+    <div class="modal-header" style="background:var(--soil)">
+      <div>
+        <div class="modal-title">📎 Add Document</div>
+        <div class="modal-sub" id="addDocSubtitle">Attach a new document to this land</div>
+      </div>
+      <button class="close-btn" onclick="closeOverlay('addDocOverlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <input type="hidden" id="d_landId">
+      <div class="form-group">
+        <label class="form-label">Document Name</label>
+        <input class="form-input" id="d_name" placeholder="e.g. Pattadar Passbook 2024">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category / Tag</label>
+          <select class="form-input" id="d_tag">
+            <option>Passbook</option>
+            <option>Deed</option>
+            <option>Tax</option>
+            <option>Survey</option>
+            <option>RTC</option>
+            <option>EC</option>
+            <option>Mutation</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" id="d_date" type="date">
+        </div>
+      </div>
+      <!-- Google Drive Link -->
+      <div class="drive-divider">☁️ Google Drive Link</div>
+      <div class="form-group">
+        <label class="form-label">Paste Google Drive / Any URL</label>
+        <div class="drive-input-wrap">
+          <input class="form-input" id="d_driveUrl" placeholder="https://drive.google.com/file/d/..." oninput="onDriveUrlInput(this.value)" autocomplete="off" spellcheck="false">
+          <span class="drive-status-icon" id="driveStatusIcon"></span>
+        </div>
+        <div class="drive-preview" id="drivePreview">
+          <span class="drive-preview-icon">☁️</span>
+          <div class="drive-preview-text">
+            <span id="drivePreviewLabel">Link ready</span>
+            <small id="drivePreviewUrl"></small>
+          </div>
+          <button class="drive-clear-btn" onclick="clearDriveUrl()" title="Clear link">✕</button>
+        </div>
+        <div class="drive-help-tip" style="margin-top:6px">
+          📌 <strong>How to get Google Drive link:</strong> Right-click file → <em>Share</em> → <em>Copy link</em> → Paste here.<br>
+          Set access to <strong>"Anyone with the link"</strong> so family can view it.
+        </div>
+      </div>
+      <div class="drive-divider">— OR upload file —</div>
+      <div class="form-group">
+        <label class="form-label">Upload File (optional)</label>
+        <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('d_file').click()"
+             ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+          <input type="file" id="d_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="fileSelected(event)">
+          <div class="file-drop-icon">📁</div>
+          <div>Tap to select or drag & drop</div>
+          <div style="font-size:0.72rem;margin-top:4px;opacity:0.7">PDF, JPG, PNG, DOC supported</div>
+          <div class="file-selected-name" id="fileSelectedName"></div>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="addDocument()">📎 Attach Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT OWNERS OVERLAY (NEW) ══ -->
+<div class="overlay" id="editOwnersOverlay" onclick="closeBg(event,'editOwnersOverlay')">
+  <div class="modal-panel">
+    <div class="modal-header" style="background:var(--admin-color)">
+      <div>
+        <div class="modal-title">👥 Edit Members</div>
+        <div class="modal-sub" id="editOwnersSubtitle">Manage owners & members for this land</div>
+      </div>
+      <button class="close-btn" onclick="closeOverlay('editOwnersOverlay')">✕</button>
+    </div>
+    <div class="form-body">
+      <input type="hidden" id="eo_landId">
+
+      <!-- Existing owners list -->
+      <div class="form-label" style="margin-bottom:6px">Current Members</div>
+      <div class="owner-editor-list" id="ownerEditorList"></div>
+
+      <!-- Add new owner -->
+      <div style="margin-top:4px">
+        <div class="form-label" style="margin-bottom:8px">➕ Add New Member</div>
+        <div class="add-owner-row">
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+            <input class="form-input" id="no_name" placeholder="e.g. Sister - Priya" style="margin:0">
+            <select class="form-input" id="no_role" style="margin:0">
+              <option value="Primary Owner">Primary Owner</option>
+              <option value="Co-owner">Co-owner</option>
+              <option value="Legal Heir">Legal Heir</option>
+              <option value="Power of Attorney">Power of Attorney</option>
+              <option value="Nominee">Nominee</option>
+              <option value="Guardian">Guardian</option>
+              <option value="Other">Other</option>
+            </select>
+            <div>
+              <div class="form-label" style="margin-bottom:5px">Avatar Color</div>
+              <div class="color-picker-row" id="ownerColorPicker"></div>
+            </div>
+          </div>
+        </div>
+        <button class="add-owner-confirm-btn" onclick="addOwner()" style="width:100%;margin-top:8px;padding:11px">
+          ✓ Add Member
+        </button>
+      </div>
+
+      <button class="submit-btn" onclick="saveOwners()" style="margin-top:4px">💾 Save Members</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   CONSTANTS & STATE
+══════════════════════════════════════ */
+const ADMIN_PIN = '2768';
+const COLORS = ['#4a7c59','#7a4e2d','#2c5f7a','#8b6914','#5a3a7a','#3a7a5a','#7a3a4a','#4a5a7a'];
+
+let isAdmin = false;
+let pinBuffer = '';
+let activeType = 'all';
+let currentDetailId = null;
+let selectedFile = null;
+let tempOwners = [];      // working copy while editing owners
+let selectedOwnerColor = COLORS[0];
+
+/* ══════════════════════════════════════
+   LAND DATA
+══════════════════════════════════════ */
+let lands = [
+  {
+    id: 1, name: "North Field", code: "A",
+    type: "agriculture", emoji: "🌾",
+    location: "Karimnagar, Telangana",
+    survey: "456/B", area: "6.5", status: "clear",
+    color: COLORS[0],
+    owners: [
+      { name: "Father - Raju", role: "Primary Owner", color: COLORS[0] },
+      { name: "Uncle - Mahesh", role: "Co-owner", color: COLORS[1] }
+    ],
+    documents: [
+      { id: 'd1', name: "Pattadar Passbook", type: "pdf", icon: "📘", date: "2018-03-12", size: "2.1 MB", tag: "Passbook", url: null },
+      { id: 'd2', name: "Sale Deed 1994", type: "pdf", icon: "📜", date: "1994-07-01", size: "4.8 MB", tag: "Deed", url: null },
+      { id: 'd3', name: "Tax Receipt 2023", type: "pdf", icon: "🧾", date: "2023-04-15", size: "0.8 MB", tag: "Tax", url: null },
+      { id: 'd4', name: "Survey Map", type: "img", icon: "🗺️", date: "2015-11-20", size: "5.2 MB", tag: "Survey", url: null },
+    ],
+    notes: "Currently under paddy cultivation. Irrigation from Godavari canal. Next tax due April 2025."
+  },
+  {
+    id: 2, name: "South Plot", code: "B",
+    type: "wet", emoji: "💧",
+    location: "Nalgonda, Telangana",
+    survey: "789/C", area: "4.0", status: "clear",
+    color: COLORS[2],
+    owners: [{ name: "Father - Raju", role: "Primary Owner", color: COLORS[0] }],
+    documents: [
+      { id: 'd5', name: "Pattadar Passbook", type: "pdf", icon: "📘", date: "2020-01-08", size: "1.9 MB", tag: "Passbook", url: null },
+      { id: 'd6', name: "RTC Extract (7/12)", type: "pdf", icon: "📋", date: "2023-06-30", size: "1.1 MB", tag: "RTC", url: null },
+      { id: 'd7', name: "Encumbrance Certificate", type: "pdf", icon: "🔖", date: "2022-08-10", size: "2.0 MB", tag: "EC", url: null },
+    ],
+    notes: "Wet land — sugarcane cultivation. Drip irrigation installed 2021."
+  },
+  {
+    id: 3, name: "East Dry Land", code: "C",
+    type: "dry", emoji: "🌵",
+    location: "Warangal, Telangana",
+    survey: "321/D", area: "8.0", status: "clear",
+    color: COLORS[3],
+    owners: [
+      { name: "Mother - Latha", role: "Primary Owner", color: COLORS[6] },
+      { name: "Father - Raju", role: "Co-owner", color: COLORS[0] }
+    ],
+    documents: [
+      { id: 'd8', name: "Pattadar Passbook", type: "pdf", icon: "📘", date: "2010-05-22", size: "2.3 MB", tag: "Passbook", url: null },
+      { id: 'd9', name: "Partition Deed", type: "pdf", icon: "📜", date: "2010-05-22", size: "3.5 MB", tag: "Deed", url: null },
+      { id: 'd10', name: "Tax Receipt 2022", type: "pdf", icon: "🧾", date: "2022-04-20", size: "0.7 MB", tag: "Tax", url: null },
+      { id: 'd11', name: "Mutation Certificate", type: "pdf", icon: "📑", date: "2011-02-14", size: "1.4 MB", tag: "Mutation", url: null },
+    ],
+    notes: "Mango orchard — 120 trees planted 2012. Bore well dug 2019."
+  },
+  {
+    id: 4, name: "Village Plot", code: "D",
+    type: "agriculture", emoji: "🏡",
+    location: "Medak, Telangana",
+    survey: "654/A", area: "3.0", status: "clear",
+    color: COLORS[1],
+    owners: [{ name: "Brother - Arun", role: "Primary Owner", color: COLORS[4] }],
+    documents: [
+      { id: 'd12', name: "Pattadar Passbook", type: "pdf", icon: "📘", date: "2019-09-01", size: "1.7 MB", tag: "Passbook", url: null },
+      { id: 'd13', name: "Gift Deed", type: "pdf", icon: "📜", date: "2019-08-15", size: "2.9 MB", tag: "Deed", url: null },
+      { id: 'd14', name: "Tax Receipt 2024", type: "pdf", icon: "🧾", date: "2024-04-10", size: "0.6 MB", tag: "Tax", url: null },
+    ],
+    notes: "Gifted from father 2019. Currently fallow — planning cotton next season."
+  },
+  {
+    id: 5, name: "Hillside Field", code: "E",
+    type: "dry", emoji: "⛰️",
+    location: "Adilabad, Telangana",
+    survey: "987/E", area: "3.0", status: "clear",
+    color: COLORS[5],
+    owners: [
+      { name: "Father - Raju", role: "Primary Owner", color: COLORS[0] },
+      { name: "Mother - Latha", role: "Co-owner", color: COLORS[6] }
+    ],
+    documents: [
+      { id: 'd15', name: "Pattadar Passbook", type: "pdf", icon: "📘", date: "2005-11-03", size: "2.0 MB", tag: "Passbook", url: null },
+      { id: 'd16', name: "Original Sale Deed", type: "pdf", icon: "📜", date: "2005-11-03", size: "6.1 MB", tag: "Deed", url: null },
+      { id: 'd17', name: "Survey Settlement", type: "img", icon: "🗺️", date: "2008-03-17", size: "3.8 MB", tag: "Survey", url: null },
+    ],
+    notes: "Oldest family land. Teak plantation since 2008. Generational asset — do not sell."
+  }
+];
+
+/* ══════════════════════════════════════
+   RENDER GRID
+══════════════════════════════════════ */
+function renderGrid(list) {
+  const grid = document.getElementById('landGrid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🌾</div><div>No land found.</div></div>`;
+    return;
+  }
+  grid.innerHTML = list.map((l, i) => `
+    <div class="land-card" onclick="openDetail(${l.id})" style="animation-delay:${i*0.06}s">
+      <button class="card-edit-btn" onclick="event.stopPropagation();openEditLand(${l.id})">✏️ Edit</button>
+      <div class="card-banner" style="background:linear-gradient(135deg,${l.color}dd,${l.color}88)">
+        <div class="banner-emoji">${l.emoji}</div>
+        <div class="card-badge ${l.status==='dispute'?'dispute':''}">
+          ${l.status==='clear'?'✓ Clear':'⚠ Dispute'}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">
+          <div class="land-initial" style="background:${l.color}">${l.code}</div>
+          ${l.name}
+        </div>
+        <div class="card-location">📍 ${l.location}</div>
+        <div class="card-meta">
+          <div class="meta-item">
+            <div class="meta-label">Survey No.</div>
+            <div class="meta-val">${l.survey}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Area</div>
+            <div class="meta-val">${l.area} Acres</div>
+          </div>
+        </div>
+        <div class="doc-count-row">
+          <div class="doc-chips">
+            ${[...new Set(l.documents.map(d=>d.tag))].slice(0,3).map(t=>`<span class="doc-chip">${t}</span>`).join('')}
+            ${l.documents.length>3?`<span class="doc-chip">+${l.documents.length-3}</span>`:''}
+          </div>
+          <div class="view-btn">View ${l.documents.length} docs →</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════
+   FILTER
+══════════════════════════════════════ */
+function filterLands() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = [...lands];
+  if (activeType !== 'all') list = list.filter(l => l.type === activeType);
+  if (q) list = list.filter(l =>
+    l.name.toLowerCase().includes(q) ||
+    l.location.toLowerCase().includes(q) ||
+    l.survey.toLowerCase().includes(q) ||
+    l.code.toLowerCase().includes(q)
+  );
+  renderGrid(list);
+}
+function filterByType(type, el) {
+  activeType = type;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filterLands();
+}
+
+/* ══════════════════════════════════════
+   DETAIL PANEL
+══════════════════════════════════════ */
+function openDetail(id) {
+  currentDetailId = id;
+  renderDetail(id);
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+function renderDetail(id) {
+  const l = lands.find(x => x.id === id);
+  if (!l) return;
+  const panel = document.getElementById('detailPanel');
+  const adminExtra = isAdmin ? `
+    <button onclick="openEditLand(${l.id})" style="
+      background:rgba(139,26,26,0.2);border:1px solid rgba(139,26,26,0.4);
+      color:#ffaaaa;padding:5px 14px;border-radius:50px;font-size:0.75rem;
+      font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+      ✏️ Edit This Land
+    </button>` : '';
+
+  panel.innerHTML = `
+    <div class="panel-header" style="background:linear-gradient(135deg,${l.color}ee,${l.color}bb)">
+      <div style="flex:1;min-width:0">
+        <div class="panel-title">${l.emoji} ${l.name}</div>
+        <div class="panel-sub">📍 ${l.location} &nbsp;•&nbsp; Plot ${l.code} &nbsp;•&nbsp; Survey: ${l.survey}</div>
+        ${adminExtra}
+      </div>
+      <button class="close-btn" onclick="closeOverlay('detailOverlay')">✕</button>
+    </div>
+    <div class="panel-body">
+
+      <div class="info-grid">
+        <div class="info-box"><div class="label">Survey No.</div><div class="value">${l.survey}</div></div>
+        <div class="info-box"><div class="label">Total Area</div><div class="value">${l.area} Acres</div></div>
+        <div class="info-box"><div class="label">Land Type</div><div class="value" style="text-transform:capitalize">${l.type}</div></div>
+        <div class="info-box"><div class="label">Status</div><div class="value" style="color:${l.status==='clear'?'#4a7c59':'#c0392b'}">${l.status==='clear'?'✓ Clear':'⚠ Dispute'}</div></div>
+        <div class="info-box"><div class="label">Documents</div><div class="value">${l.documents.length} files</div></div>
+        <div class="info-box"><div class="label">Location</div><div class="value">${l.location}</div></div>
+      </div>
+
+      <div class="section-head">📄 Documents</div>
+      <div class="doc-list" id="docList_${l.id}">
+        ${renderDocList(l)}
+      </div>
+
+      <div class="upload-trigger" onclick="openAddDoc(${l.id})">
+        <span style="font-size:1.3rem">📎</span>
+        <span>Upload / Attach New Document</span>
+      </div>
+
+      <div class="section-head" style="margin-top:1.4rem">👥 Owners / Members</div>
+      <div class="owner-list" id="ownerListDisplay_${l.id}">
+        ${l.owners.map(o=>`
+          <div class="owner-chip">
+            <div class="owner-avatar" style="background:${o.color}">${o.name[0]}</div>
+            <div>
+              <div class="owner-name">${o.name}</div>
+              <div class="owner-role">${o.role}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="edit-owners-btn" onclick="openEditOwners(${l.id})">
+        ✏️ Edit Members &amp; Owners
+      </button>
+
+      <div class="section-head">📝 Notes</div>
+      <div class="notes-box">${l.notes || 'No notes added yet.'}</div>
+
+    </div>
+  `;
+}
+
+function renderDocList(l) {
+  if (!l.documents.length) return `<div style="text-align:center;padding:1rem;color:var(--text-muted);font-size:0.85rem">No documents added yet.</div>`;
+  return l.documents.map(d => {
+    const hasDrive = d.source === 'drive';
+    const hasUrl = d.source === 'url';
+    const hasFile = d.source === 'local';
+    const hasAny = d.url;
+    const driveTag = hasDrive
+      ? `<span style="background:rgba(66,133,244,0.12);color:#4285f4;border:1px solid rgba(66,133,244,0.25);padding:1px 7px;border-radius:50px;font-size:0.62rem;font-weight:700;">☁️ Drive</span>`
+      : hasUrl
+      ? `<span style="background:rgba(74,124,89,0.1);color:var(--leaf);border:1px solid rgba(74,124,89,0.25);padding:1px 7px;border-radius:50px;font-size:0.62rem;font-weight:700;">🔗 URL</span>`
+      : '';
+    return `
+    <div class="doc-item">
+      <div class="doc-icon ${d.type}">${d.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="doc-name" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${d.name} ${driveTag}</div>
+        <div class="doc-meta">${d.date} &nbsp;•&nbsp; ${d.size} &nbsp;•&nbsp; <span class="doc-tag">${d.tag}</span></div>
+      </div>
+      <div class="doc-actions">
+        <button class="doc-btn view" onclick="event.stopPropagation();viewDoc('${d.id}',${l.id})" ${!hasAny?'style="opacity:0.45"':''}>👁 View</button>
+        <button class="doc-btn dl" onclick="event.stopPropagation();downloadDoc('${d.id}',${l.id})" ${!hasAny?'style="opacity:0.45"':''}>⬇</button>
+        <button class="doc-btn del" onclick="event.stopPropagation();deleteDoc('${d.id}',${l.id})">🗑</button>
+      </div>
+    </div>
+  `}).join('');
+}
+
+/* ══════════════════════════════════════
+   DOC ACTIONS
+══════════════════════════════════════ */
+function viewDoc(docId, landId) {
+  const l = lands.find(x => x.id === landId);
+  const d = l?.documents.find(x => x.id === docId);
+  if (!d) return;
+  if (d.url) {
+    window.open(d.url, '_blank');
+  } else {
+    showToast('📄 No file attached yet. Admin can upload or add a Drive link.');
+  }
+}
+function downloadDoc(docId, landId) {
+  const l = lands.find(x => x.id === landId);
+  const d = l?.documents.find(x => x.id === docId);
+  if (!d) return;
+  const dlUrl = d.downloadUrl || d.url;
+  if (dlUrl) {
+    if (d.source === 'drive') {
+      // Open Drive download in new tab (browser handles it)
+      window.open(dlUrl, '_blank');
+      showToast('☁️ Opening Google Drive download...');
+    } else {
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = d.name;
+      a.click();
+      showToast('⬇ Downloading ' + d.name);
+    }
+  } else {
+    showToast('📎 No file uploaded yet for this document.');
+  }
+}
+function deleteDoc(docId, landId) {
+  if (!isAdmin) return;
+  if (!confirm('Delete this document? This cannot be undone.')) return;
+  const l = lands.find(x => x.id === landId);
+  l.documents = l.documents.filter(d => d.id !== docId);
+  renderDetail(landId);
+  updateStats();
+  showToast('🗑 Document deleted');
+}
+
+/* ══════════════════════════════════════
+   ADD DOCUMENT
+══════════════════════════════════════ */
+function openAddDoc(landId) {
+  if (!isAdmin) { showToast('🔒 Admin access required'); return; }
+  const l = lands.find(x => x.id === landId);
+  document.getElementById('d_landId').value = landId;
+  document.getElementById('addDocSubtitle').textContent = 'Attaching to: ' + l.name;
+  document.getElementById('d_name').value = '';
+  document.getElementById('d_date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('fileSelectedName').style.display = 'none';
+  document.getElementById('fileSelectedName').textContent = '';
+  document.getElementById('d_file').value = '';
+  selectedFile = null;
+  driveUrl = null;
+  document.getElementById('d_driveUrl').value = '';
+  document.getElementById('driveStatusIcon').textContent = '';
+  document.getElementById('drivePreview').classList.remove('show');
+  openOverlay('addDocOverlay');
+}
+function addDocument() {
+  const landId = parseInt(document.getElementById('d_landId').value);
+  const name = document.getElementById('d_name').value.trim();
+  if (!name) { showToast('⚠ Enter document name'); return; }
+  const l = lands.find(x => x.id === landId);
+  const tag = document.getElementById('d_tag').value;
+  const date = document.getElementById('d_date').value;
+
+  const tagIcons = { Passbook:'📘', Deed:'📜', Tax:'🧾', Survey:'🗺️', RTC:'📋', EC:'🔖', Mutation:'📑', Other:'📄' };
+
+  // Determine URL source: Drive link > uploaded file > null
+  let docUrl = null;
+  let docDownloadUrl = null;
+  let docSize = '—';
+  let docSource = 'none';
+
+  if (driveUrl) {
+    docUrl = driveUrl.viewUrl;
+    docDownloadUrl = driveUrl.downloadUrl;
+    docSource = driveUrl.isDrive ? 'drive' : 'url';
+    docSize = driveUrl.isDrive ? '☁️ Drive' : '🔗 URL';
+  } else if (selectedFile) {
+    docUrl = URL.createObjectURL(selectedFile);
+    docDownloadUrl = docUrl;
+    docSize = formatBytes(selectedFile.size);
+    docSource = 'local';
+  }
+
+  const newDoc = {
+    id: 'd' + Date.now(),
+    name, tag, date,
+    type: selectedFile ? (selectedFile.type.includes('image') ? 'img' : 'pdf') : 'pdf',
+    icon: tagIcons[tag] || '📄',
+    size: docSize,
+    url: docUrl,
+    downloadUrl: docDownloadUrl,
+    source: docSource
+  };
+  l.documents.push(newDoc);
+  closeOverlay('addDocOverlay');
+  renderDetail(landId);
+  updateStats();
+  const sourceMsg = docSource === 'drive' ? ' (Google Drive)' : docSource === 'local' ? ' (uploaded)' : '';
+  showToast('✅ Document added to ' + l.name + sourceMsg);
+}
+
+/* ══════════════════════════════════════
+   GOOGLE DRIVE URL HANDLING
+══════════════════════════════════════ */
+let driveUrl = null;
+
+function convertDriveLink(url) {
+  // Convert Google Drive share link to direct view link
+  // Format: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+  //      -> https://drive.google.com/file/d/FILE_ID/preview  (for view)
+  //      -> https://drive.google.com/uc?export=download&id=FILE_ID (for download)
+  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) {
+    const fileId = match[1];
+    return {
+      viewUrl: `https://drive.google.com/file/d/${fileId}/preview`,
+      downloadUrl: `https://drive.google.com/uc?export=download&id=${fileId}`,
+      fileId,
+      isDrive: true
+    };
+  }
+  // Also handle ?id= format
+  const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (idMatch) {
+    const fileId = idMatch[1];
+    return {
+      viewUrl: `https://drive.google.com/file/d/${fileId}/preview`,
+      downloadUrl: `https://drive.google.com/uc?export=download&id=${fileId}`,
+      fileId,
+      isDrive: true
+    };
+  }
+  // Any other valid URL — use as-is
+  if (url.startsWith('http')) {
+    return { viewUrl: url, downloadUrl: url, isDrive: false };
+  }
+  return null;
+}
+
+function onDriveUrlInput(val) {
+  const statusIcon = document.getElementById('driveStatusIcon');
+  const preview = document.getElementById('drivePreview');
+  const previewLabel = document.getElementById('drivePreviewLabel');
+  const previewUrlEl = document.getElementById('drivePreviewUrl');
+  val = val.trim();
+  if (!val) {
+    driveUrl = null;
+    statusIcon.textContent = '';
+    preview.classList.remove('show');
+    return;
+  }
+  const result = convertDriveLink(val);
+  if (result) {
+    driveUrl = result;
+    statusIcon.textContent = '✅';
+    preview.classList.add('show');
+    previewLabel.textContent = result.isDrive ? '✅ Google Drive link detected & converted' : '✅ Custom URL ready';
+    previewUrlEl.textContent = result.viewUrl;
+    // Clear file upload if drive link is set
+    document.getElementById('d_file').value = '';
+    document.getElementById('fileSelectedName').style.display = 'none';
+    selectedFile = null;
+  } else {
+    driveUrl = null;
+    statusIcon.textContent = '⚠️';
+    preview.classList.remove('show');
+  }
+}
+
+function clearDriveUrl() {
+  driveUrl = null;
+  document.getElementById('d_driveUrl').value = '';
+  document.getElementById('driveStatusIcon').textContent = '';
+  document.getElementById('drivePreview').classList.remove('show');
+}
+
+function fileSelected(e) {
+  selectedFile = e.target.files[0];
+  if (selectedFile) {
+    const el = document.getElementById('fileSelectedName');
+    el.textContent = '📎 ' + selectedFile.name;
+    el.style.display = 'block';
+    // Clear drive URL if file is selected
+    clearDriveUrl();
+  }
+}
+function dragOver(e) { e.preventDefault(); document.getElementById('fileDropZone').classList.add('dragover'); }
+function dragLeave(e) { document.getElementById('fileDropZone').classList.remove('dragover'); }
+function dropFile(e) {
+  e.preventDefault();
+  document.getElementById('fileDropZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    selectedFile = file;
+    const el = document.getElementById('fileSelectedName');
+    el.textContent = '📎 ' + file.name;
+    el.style.display = 'block';
+  }
+}
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+
+/* ══════════════════════════════════════
+   ADD LAND
+══════════════════════════════════════ */
+function openAddLand() {
+  if (!isAdmin) { showToast('🔒 Admin access required'); return; }
+  ['f_name','f_location','f_survey','f_area','f_owner','f_notes'].forEach(id => document.getElementById(id).value = '');
+  openOverlay('addOverlay');
+}
+function addLand() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { showToast('⚠ Enter land name'); return; }
+  const type = document.getElementById('f_type').value;
+  const newLand = {
+    id: Date.now(),
+    name,
+    code: String.fromCharCode(65 + lands.length),
+    type,
+    emoji: { agriculture:'🌾', dry:'🌵', wet:'💧' }[type] || '🌿',
+    location: document.getElementById('f_location').value || 'Unknown Location',
+    survey: document.getElementById('f_survey').value || 'N/A',
+    area: document.getElementById('f_area').value || '0',
+    status: 'clear',
+    color: COLORS[lands.length % COLORS.length],
+    owners: [{ name: document.getElementById('f_owner').value || 'Family', role: 'Primary Owner', color: COLORS[0] }],
+    documents: [],
+    notes: document.getElementById('f_notes').value || ''
+  };
+  lands.push(newLand);
+  closeOverlay('addOverlay');
+  filterLands();
+  updateStats();
+  showToast('✅ ' + name + ' registered!');
+}
+
+/* ══════════════════════════════════════
+   EDIT LAND
+══════════════════════════════════════ */
+function openEditLand(id) {
+  if (!isAdmin) { showToast('🔒 Admin access required'); return; }
+  const l = lands.find(x => x.id === id);
+  if (!l) return;
+  document.getElementById('e_id').value = l.id;
+  document.getElementById('e_name').value = l.name;
+  document.getElementById('e_type').value = l.type;
+  document.getElementById('e_location').value = l.location;
+  document.getElementById('e_survey').value = l.survey;
+  document.getElementById('e_area').value = l.area;
+  document.getElementById('e_status').value = l.status;
+  document.getElementById('e_notes').value = l.notes;
+  openOverlay('editOverlay');
+}
+function saveLand() {
+  const id = parseInt(document.getElementById('e_id').value);
+  const l = lands.find(x => x.id === id);
+  if (!l) return;
+  const type = document.getElementById('e_type').value;
+  l.name = document.getElementById('e_name').value.trim() || l.name;
+  l.type = type;
+  l.emoji = { agriculture:'🌾', dry:'🌵', wet:'💧' }[type] || l.emoji;
+  l.location = document.getElementById('e_location').value;
+  l.survey = document.getElementById('e_survey').value;
+  l.area = document.getElementById('e_area').value;
+  l.status = document.getElementById('e_status').value;
+  l.notes = document.getElementById('e_notes').value;
+  closeOverlay('editOverlay');
+  filterLands();
+  updateStats();
+  if (currentDetailId === id) renderDetail(id);
+  showToast('💾 ' + l.name + ' updated!');
+}
+function deleteLand() {
+  const id = parseInt(document.getElementById('e_id').value);
+  const l = lands.find(x => x.id === id);
+  if (!confirm('Delete "' + l.name + '"? This cannot be undone.')) return;
+  lands = lands.filter(x => x.id !== id);
+  closeOverlay('editOverlay');
+  closeOverlay('detailOverlay');
+  filterLands();
+  updateStats();
+  showToast('🗑 ' + l.name + ' deleted');
+}
+
+/* ══════════════════════════════════════
+   EDIT OWNERS / MEMBERS  (NEW)
+══════════════════════════════════════ */
+function openEditOwners(landId) {
+  if (!isAdmin) { showToast('🔒 Admin access required'); return; }
+  const l = lands.find(x => x.id === landId);
+  if (!l) return;
+
+  // Deep copy owners to temp
+  tempOwners = l.owners.map(o => ({ ...o }));
+  selectedOwnerColor = COLORS[0];
+
+  document.getElementById('eo_landId').value = landId;
+  document.getElementById('editOwnersSubtitle').textContent = 'Managing: ' + l.name;
+  document.getElementById('no_name').value = '';
+  document.getElementById('no_role').value = 'Primary Owner';
+
+  renderOwnerEditorList();
+  buildColorPicker();
+  openOverlay('editOwnersOverlay');
+}
+
+function renderOwnerEditorList() {
+  const el = document.getElementById('ownerEditorList');
+  if (!tempOwners.length) {
+    el.innerHTML = `<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:0.82rem;background:var(--parchment);border-radius:10px;">No members yet. Add one below.</div>`;
+    return;
+  }
+  el.innerHTML = tempOwners.map((o, i) => `
+    <div class="owner-editor-item">
+      <div class="owner-editor-avatar" style="background:${o.color}">${o.name[0]}</div>
+      <div class="owner-editor-info">
+        <div class="owner-editor-name">${o.name}</div>
+        <div class="owner-editor-role">${o.role}</div>
+      </div>
+      <button class="owner-del-btn" onclick="removeTempOwner(${i})" title="Remove member">🗑</button>
+    </div>
+  `).join('');
+}
+
+function removeTempOwner(index) {
+  tempOwners.splice(index, 1);
+  renderOwnerEditorList();
+}
+
+function buildColorPicker() {
+  const el = document.getElementById('ownerColorPicker');
+  el.innerHTML = COLORS.map((c, i) => `
+    <div class="color-swatch ${i===0?'selected':''}"
+         style="background:${c}"
+         onclick="selectOwnerColor('${c}', this)"
+         title="${c}">
+    </div>
+  `).join('');
+}
+
+function selectOwnerColor(color, el) {
+  selectedOwnerColor = color;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function addOwner() {
+  const name = document.getElementById('no_name').value.trim();
+  if (!name) { showToast('⚠ Enter member name'); return; }
+  const role = document.getElementById('no_role').value;
+  tempOwners.push({ name, role, color: selectedOwnerColor });
+  document.getElementById('no_name').value = '';
+  renderOwnerEditorList();
+  showToast('✅ ' + name + ' added — click Save to confirm');
+}
+
+function saveOwners() {
+  const landId = parseInt(document.getElementById('eo_landId').value);
+  const l = lands.find(x => x.id === landId);
+  if (!l) return;
+  if (!tempOwners.length) {
+    showToast('⚠ At least one member required');
+    return;
+  }
+  l.owners = tempOwners.map(o => ({ ...o }));
+  closeOverlay('editOwnersOverlay');
+  updateStats();
+  if (currentDetailId === landId) renderDetail(landId);
+  filterLands();
+  showToast('💾 Members updated for ' + l.name);
+}
+
+/* ══════════════════════════════════════
+   ADMIN PIN
+══════════════════════════════════════ */
+function openAdminLogin() {
+  if (isAdmin) { logoutAdmin(); return; }
+  pinBuffer = '';
+  updatePinDisplay();
+  document.getElementById('pinError').textContent = '';
+  openOverlay('loginOverlay');
+}
+function pinKey(k) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += k;
+  updatePinDisplay();
+  if (pinBuffer.length === 4) setTimeout(pinSubmit, 180);
+}
+function pinBack() { pinBuffer = pinBuffer.slice(0,-1); updatePinDisplay(); }
+function pinClear() { pinBuffer = ''; updatePinDisplay(); }
+function pinSubmit() {
+  if (pinBuffer === ADMIN_PIN) {
+    isAdmin = true;
+    closeOverlay('loginOverlay');
+    document.body.classList.add('admin-mode');
+    document.getElementById('adminToggleBtn').classList.add('active');
+    document.getElementById('adminToggleBtn').innerHTML = '<div class="admin-dot"></div> Admin ON';
+    document.getElementById('adminBanner').classList.add('show');
+    document.getElementById('addLandBtn').style.display = 'flex';
+    document.getElementById('sectionSub').textContent = 'Admin Mode: Click ✏️ Edit on any card, or open a land to manage documents & members.';
+    showToast('🛡️ Admin access granted!');
+  } else {
+    document.getElementById('pinError').textContent = '❌ Wrong PIN. Try again.';
+    pinBuffer = '';
+    updatePinDisplay();
+    const panel = document.querySelector('#loginOverlay .modal-panel');
+    panel.style.animation = 'none';
+    panel.offsetHeight;
+    panel.style.animation = 'shake 0.4s ease';
+  }
+}
+function updatePinDisplay() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('pd' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+function logoutAdmin() {
+  isAdmin = false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('adminToggleBtn').classList.remove('active');
+  document.getElementById('adminToggleBtn').innerHTML = '🔐 Admin';
+  document.getElementById('adminBanner').classList.remove('show');
+  document.getElementById('addLandBtn').style.display = 'none';
+  document.getElementById('sectionSub').textContent = 'Tap any land card to view documents and details';
+  if (currentDetailId) renderDetail(currentDetailId);
+  filterLands();
+  showToast('👋 Logged out of admin mode');
+}
+
+/* ══════════════════════════════════════
+   STATS
+══════════════════════════════════════ */
+function updateStats() {
+  document.getElementById('totalLands').textContent = lands.length;
+  document.getElementById('totalDocs').textContent = lands.reduce((s,l)=>s+l.documents.length,0);
+  document.getElementById('totalAcres').textContent = lands.reduce((s,l)=>s+parseFloat(l.area||0),0).toFixed(1);
+  const members = new Set(lands.flatMap(l => l.owners.map(o => o.name)));
+  document.getElementById('totalMembers').textContent = members.size;
+}
+
+/* ══════════════════════════════════════
+   OVERLAY UTILS
+══════════════════════════════════════ */
+function openOverlay(id) { document.getElementById(id).classList.add('open'); }
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+function closeBg(e, id) { if (e.target === e.currentTarget) closeOverlay(id); }
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════
+   KEYBOARD SUPPORT
+══════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  const lo = document.getElementById('loginOverlay');
+  if (lo.classList.contains('open')) {
+    if (e.key >= '0' && e.key <= '9') pinKey(e.key);
+    else if (e.key === 'Backspace') pinBack();
+    else if (e.key === 'Escape') closeOverlay('loginOverlay');
+    else if (e.key === 'Enter') pinSubmit();
+  } else if (e.key === 'Escape') {
+    ['detailOverlay','addOverlay','editOverlay','addDocOverlay','editOwnersOverlay'].forEach(closeOverlay);
+  }
+});
+
+/* ══════════════════════════════════════
+   SHAKE ANIMATION
+══════════════════════════════════════ */
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}
+  80%{transform:translateX(5px)}
+}`;
+document.head.appendChild(shakeStyle);
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+renderGrid(lands);
+updateStats();
+</script>
+</body>
+</html>
